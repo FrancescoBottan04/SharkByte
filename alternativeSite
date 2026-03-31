@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shark Byte — Dal Database al Sito Web, in Automatico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#050507; --white:#f5f5f7; --accent:#00e5ff; --accent2:#0055ff;
+  --shark:#090912; --mid:#0e0e18; --card:#111120; --border:rgba(255,255,255,.07);
+  --txt2:rgba(245,245,247,.52); --max:1060px; --px:clamp(20px,5vw,56px);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.container{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--px)}
+
+/* TYPOGRAPHY */
+.tag{display:inline-block;font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.h2{font-family:'Syne',sans-serif;font-size:clamp(1.85rem,4vw,3.2rem);font-weight:800;line-height:1.07;letter-spacing:-.03em}
+.sub{font-size:clamp(.9rem,1.5vw,1.05rem);color:var(--txt2);line-height:1.73;font-weight:300;max-width:500px}
+.gradient-text{background:linear-gradient(130deg,#00e5ff 0%,#0055ff 55%,#8040ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 28px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;border:none;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s,border-color .2s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 0 26px rgba(0,85,255,.22)}
+.btn-p:hover{box-shadow:0 0 42px rgba(0,85,255,.42)}
+.btn-g{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.18)}
+.btn-g:hover{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.05)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.23,1,.32,1),transform .7s cubic-bezier(.23,1,.32,1)}
+.reveal.on{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.15s}.d3{transition-delay:.23s}.d4{transition-delay:.31s}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;display:flex;align-items:center;padding:0 var(--px);transition:background .35s,border-color .35s,backdrop-filter .35s;border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(5,5,7,.88);backdrop-filter:blur(20px) saturate(160%);border-color:var(--border)}
+.nav-in{width:100%;max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--white);font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.02em}
+.logo-sq{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:.85rem;flex-shrink:0}
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{color:rgba(245,245,247,.62);text-decoration:none;font-size:.85rem;letter-spacing:.02em;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{padding:7px 18px;font-size:.85rem}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:3px}
+.burger span{width:20px;height:2px;background:var(--white);border-radius:2px;transition:.3s}
+.m-menu{display:none;position:fixed;inset:0;top:60px;z-index:999;background:rgba(5,5,7,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.m-menu.open{display:flex}
+.m-menu a{color:var(--white);text-decoration:none;font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:700}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:var(--black);padding:100px var(--px) 60px;text-align:center}
+.hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 50% at 50% 108%,rgba(0,85,255,.16) 0%,transparent 65%),radial-gradient(ellipse 40% 32% at 16% 50%,rgba(0,229,255,.07) 0%,transparent 55%)}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:68px 68px;mask-image:radial-gradient(ellipse 78% 78% at 50% 50%,black 12%,transparent 70%)}
+.hero-content{position:relative;z-index:2;max-width:700px}
+.hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:26px;opacity:0;animation:up .8s .15s forwards}
+.hero-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,7vw,6.4rem);font-weight:800;line-height:.97;letter-spacing:-.04em;margin-bottom:22px;opacity:0;animation:up .9s .28s forwards}
+.hero-sub{font-size:clamp(.9rem,1.6vw,1.12rem);color:var(--txt2);line-height:1.7;max-width:480px;margin:0 auto 36px;opacity:0;animation:up .9s .42s forwards}
+.hero-acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;animation:up .9s .55s forwards}
+.hero-scroll{position:absolute;bottom:25px;top: 970px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--txt2);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:up .9s .85s forwards}
+.scroll-l{width:1px;height:36px;background:linear-gradient(to bottom,var(--accent),transparent);animation:sd 1.8s ease-in-out infinite}
+@keyframes sd{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ── MOCKUP ── */
+.mockup-wrap{max-width:820px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 28px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.055)}
+.mock-bar{background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);padding:9px 13px;display:flex;align-items:center;gap:9px}
+.mock-dots{display:flex;gap:5px}
+.mock-dots s{display:block;width:9px;height:9px;border-radius:50%;text-decoration:none}
+.mock-url{flex:1;background:rgba(255,255,255,.05);border-radius:5px;padding:3px 9px;font-size:.69rem;color:var(--txt2);display:flex;align-items:center;gap:4px}
+.mock-body{height:260px;display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(150deg,#0b0b1a,#060610);overflow:hidden}
+.ml{padding:24px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.ml-tag{width:64px;height:6px;background:var(--accent);border-radius:3px;opacity:.5}
+.ml-h{width:66%;height:17px;background:rgba(255,255,255,.17);border-radius:3px}
+.ml-h2{width:48%;height:17px;background:rgba(255,255,255,.1);border-radius:3px}
+.ml-p{width:85%;height:6px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:5px}
+.ml-p2{width:70%;height:6px;background:rgba(255,255,255,.04);border-radius:3px}
+.ml-btn{width:100px;height:27px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;margin-top:10px}
+.mr{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:18px;background:linear-gradient(135deg,rgba(0,229,255,.04),rgba(0,85,255,.07))}
+.mc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.055);border-radius:8px;padding:9px;display:flex;flex-direction:column;gap:5px}
+.mc-img{width:100%;height:44px;background:rgba(0,229,255,.08);border-radius:4px}
+.mc-l{height:5px;background:rgba(255,255,255,.1);border-radius:2px}
+.mc-l2{width:58%;height:5px;background:rgba(255,255,255,.06);border-radius:2px}
+
+/* ── LOGOS ── */
+.logos{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,.012);padding:32px var(--px);text-align:center}
+.logos-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--txt2);margin-bottom:20px}
+.logos-row{display:flex;flex-wrap:wrap;gap:28px 44px;justify-content:center;align-items:center}
+.logo-i{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:rgba(255,255,255,.17);letter-spacing:-.02em;transition:color .25s}
+.logo-i:hover{color:rgba(255,255,255,.42)}
+
+/* ── SECTION ── */
+.sec{padding:92px var(--px)}
+
+/* ── HOW ── */
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-top:52px}
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid var(--border);transition:padding-left .25s}
+.step:last-child{border-bottom:none}
+.step:hover{padding-left:5px}
+.step-n{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:rgba(255,255,255,.055);line-height:1;min-width:38px;transition:color .25s}
+.step:hover .step-n{color:var(--accent)}
+.step h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:5px}
+.step p{font-size:.85rem;color:var(--txt2);line-height:1.63}
+.flow{display:flex;flex-direction:column;max-width:360px;width:100%}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px 18px;display:flex;align-items:center;gap:12px;transition:border-color .25s,transform .25s}
+.flow-node:hover{border-color:rgba(0,229,255,.28);transform:translateX(4px)}
+.flow-ico{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-size:.95rem;flex-shrink:0}
+.ico-db{background:rgba(0,229,255,.1)}.ico-be{background:rgba(0,85,255,.1)}.ico-fe{background:rgba(128,64,255,.1)}.ico-live{background:rgba(30,200,90,.1)}
+.flow-lbl{font-family:'Syne',sans-serif;font-size:.87rem;font-weight:700}
+.flow-meta{font-size:.7rem;color:var(--txt2);margin-top:1px}
+.flow-arr{height:16px;width:1px;margin-left:35px;background:linear-gradient(to bottom,var(--accent),var(--accent2));position:relative}
+.flow-arr::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);border:3px solid transparent;border-top-color:var(--accent2);border-bottom:none}
+
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:52px}
+.feat{background:var(--card);padding:32px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;transition:background .25s}
+.feat:nth-child(3n){border-right:none}
+.feat:nth-child(n+4){border-bottom:none}
+.feat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,.04),transparent);opacity:0;transition:opacity .25s}
+.feat:hover{background:#14142a}
+.feat:hover::before{opacity:1}
+.feat-ico{font-size:1.7rem;margin-bottom:14px;display:block}
+.feat h3{font-family:'Syne',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:7px}
+.feat p{font-size:.83rem;color:var(--txt2);line-height:1.63}
+.feat-tag{display:inline-block;margin-top:12px;font-size:.65rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:rgba(0,229,255,.08);border-radius:100px;padding:3px 9px}
+
+/* ── SPLIT ── */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.split.flip{direction:rtl}
+.split.flip>*{direction:ltr}
+.split-t{max-width:440px}
+.split-t .sub{margin-top:12px}
+.split-t .btn{margin-top:24px}
+.split-v{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center}
+.split-v::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,85,255,.09) 0%,transparent 66%)}
+.code-win{background:rgba(0,0,0,.52);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:16px 20px;font-size:.71rem;line-height:1.85;font-family:'SF Mono','Fira Code',monospace;width:82%;position:relative;z-index:1}
+.kw{color:#ff79c6}.fn{color:#50fa7b}.str{color:#f1fa8c}.cm{color:rgba(255,255,255,.27)}.ac{color:var(--accent)}
+.ui-mock{width:82%;position:relative;z-index:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;padding:16px 18px;display:flex;flex-direction:column;gap:11px}
+.ui-hd{display:flex;gap:9px;align-items:center}
+.ui-sq{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));flex-shrink:0}
+.ui-ln{height:6px;border-radius:3px;background:rgba(255,255,255,.17)}
+.ui-ln2{width:52%;height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:3px}
+.ui-ph{width:100%;height:80px;background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(0,85,255,.08));border-radius:6px;border:1px solid var(--border)}
+.ui-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ui-bg{height:32px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid var(--border)}
+.ui-bp{height:32px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;opacity:.72}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:52px}
+.stat{background:var(--card);padding:40px 18px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.3rem);font-weight:800;line-height:1;background:linear-gradient(135deg,var(--white),rgba(255,255,255,.38));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:7px}
+.stat-acc{color:var(--accent);-webkit-text-fill-color:var(--accent)}
+.stat-l{font-size:.79rem;color:var(--txt2);line-height:1.5}
+
+/* ── TEAM ── */
+.team-hdr{text-align:center;margin-bottom:48px}
+.team-hdr .sub{margin:12px auto 0}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card-profess{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:3/4;background:var(--card);border:1px solid var(--border);cursor:default}
+.card-profess img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.23,1,.32,1),filter .5s ease;filter:grayscale(15%)}
+.card-profess:hover img{transform:scale(1.05);filter:grayscale(0%) brightness(1.04)}
+.info-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,12,.97) 0%,rgba(5,5,12,.65) 40%,rgba(5,5,12,0) 68%);display:flex;align-items:flex-end;transition:background .4s}
+.card-profess:hover .info-overlay{background:linear-gradient(to top,rgba(5,5,12,.97) 0%,rgba(5,5,12,.82) 52%,rgba(5,5,12,.38) 100%)}
+.overlay-content{padding:20px 18px;transform:translateY(5px);transition:transform .4s cubic-bezier(.23,1,.32,1)}
+.card-profess:hover .overlay-content{transform:translateY(0)}
+.overlay-content h5{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:3px;color:var(--white)}
+.overlay-content .ruolo{font-size:.67rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.linea-decorativa{width:28px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;margin:9px 0;transition:width .32s .04s}
+.card-profess:hover .linea-decorativa{width:48px}
+.overlay-content .descrizione{font-size:.77rem;color:rgba(245,245,247,.58);line-height:1.58;max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.23,1,.32,1),opacity .32s;opacity:0}
+.card-profess:hover .descrizione{max-height:90px;opacity:1}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:36px}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:100px;padding:8px 16px;font-size:.8rem;display:flex;align-items:center;gap:6px;transition:border-color .2s,transform .2s}
+.pill:hover{border-color:rgba(0,229,255,.3);transform:translateY(-3px)}
+.pill span{font-size:.95rem}
+
+/* ── CTA ── */
+.cta-box{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:64px 44px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-44px;left:50%;transform:translateX(-50%);width:320px;height:160px;background:radial-gradient(ellipse,rgba(0,85,255,.2) 0%,transparent 66%);pointer-events:none}
+.cta-box .sub{margin:12px auto 0}
+.cta-acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);background:var(--black);padding:52px var(--px) 32px}
+.footer-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer-brand p{font-size:.82rem;color:var(--txt2);line-height:1.65;max-width:230px;margin-top:10px}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.28);margin-bottom:12px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col ul a{font-size:.81rem;color:var(--txt2);text-decoration:none;transition:color .2s}
+.footer-col ul a:hover{color:var(--white)}
+.footer-bot{max-width:var(--max);margin:32px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.footer-bot p{font-size:.73rem;color:rgba(255,255,255,.2)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .nav-links,.nav-cta{display:none}
+  .burger{display:flex}
+  .how-grid,.split,.split.flip{grid-template-columns:1fr;gap:40px;direction:ltr}
+  .split.flip>*{direction:ltr}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .feat:nth-child(3n){border-right:1px solid var(--border)}
+  .feat:nth-child(2n){border-right:none}
+  .feat:nth-child(5),.feat:nth-child(6){border-bottom:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .stat:nth-child(odd){border-right:1px solid var(--border)}
+  .stat:nth-last-child(-n+2){border-bottom:none}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+  .hero h1{font-size:2.5rem}
+  .hero-acts .btn{width:100%;justify-content:center}
+  .mock-body{grid-template-columns:1fr;height:auto}
+  .mr{display:none}
+  .ml{padding:22px}
+  .feat-grid{grid-template-columns:1fr}
+  .feat:nth-child(n){border-right:none!important;border-bottom:1px solid var(--border)!important}
+  .feat:last-child{border-bottom:none!important}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .team-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .cta-box{padding:44px 22px}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+  .footer-col:nth-child(n+3){display:none}
+}
+@media(max-width:400px){
+  .team-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#" class="logo"><div class="logo-sq">🦈</div>Shark Byte</a>
+    <ul class="nav-links">
+      <li><a href="#how">Come funziona</a></li>
+      <li><a href="#feat">Funzionalità</a></li>
+      <li><a href="#team">Chi siamo</a></li>
+      <li><a href="#tech">Tecnologie</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-p nav-cta">Inizia ora</a>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="m-menu" id="mmenu">
+  <a href="#how" onclick="cm()">Come funziona</a>
+  <a href="#feat" onclick="cm()">Funzionalità</a>
+  <a href="#team" onclick="cm()">Chi siamo</a>
+  <a href="#tech" onclick="cm()">Tecnologie</a>
+  <a href="#contact" onclick="cm()">Contatti</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-pill">Automazione Web · Full‑Stack</div>
+    <h1>Dal database al<br><span class="gradient-text">sito web</span>,<br>in automatico.</h1>
+    <p class="hero-sub">Shark Byte trasforma i tuoi dati in esperienze digitali straordinarie. Architetture moderne, backend robusti, frontend senza compromessi — tutto generato e sincronizzato in tempo reale.</p>
+    <div class="hero-acts">
+      <a href="#how" class="btn btn-p">Scopri come funziona</a>
+      <a href="#contact" class="btn btn-g">Parla con noi</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-l"></div><span>Scroll</span></div>
+</section>
+
+<!-- MOCKUP -->
+<div style="padding:0 var(--px) 72px;background:var(--black)">
+  <div class="container">
+    <div class="mockup-wrap reveal">
+      <div class="mock-bar">
+        <div class="mock-dots"><s style="background:#ff5f57"></s><s style="background:#febc2e"></s><s style="background:#28c840"></s></div>
+        <div class="mock-url">🔒 tuodominio.com — generato da Shark Byte</div>
+      </div>
+      <div class="mock-body">
+        <div class="ml"><div class="ml-tag"></div><div class="ml-h"></div><div class="ml-h2"></div><div class="ml-p"></div><div class="ml-p2"></div><div class="ml-btn"></div></div>
+        <div class="mr">
+          <div class="mc"><div class="mc-img"></div><div class="mc-l"></div><div class="mc-l2"></div></div>
+          <div class="mc"><div class="mc-img" style="background:rgba(0,85,255,.1)"></div><div class="mc-l"></div><div class="mc-l2"></div></div>
+          <div class="mc"><div class="mc-img" style="background:rgba(128,64,255,.1)"></div><div class="mc-l"></div><div class="mc-l2"></div></div>
+          <div class="mc"><div class="mc-img" style="background:rgba(0,229,255,.06)"></div><div class="mc-l"></div><div class="mc-l2"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOS -->
+<div class="logos">
+  <p class="logos-lbl">Tecnologie con cui costruiamo</p>
+  <div class="logos-row">
+    <span class="logo-i">PostgreSQL</span><span class="logo-i">Node.js</span><span class="logo-i">React</span>
+    <span class="logo-i">Next.js</span><span class="logo-i">GraphQL</span><span class="logo-i">Docker</span>
+    <span class="logo-i">AWS</span><span class="logo-i">Strapi</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how" style="background:var(--shark)">
+  <div class="container">
+    <div class="tag reveal">Come funziona</div>
+    <h2 class="h2 reveal d1">Il tuo database.<br>Il tuo sito.<br>Automaticamente.</h2>
+    <div class="how-grid">
+      <div class="steps">
+        <div class="step reveal d1"><div class="step-n">01</div><div><h3>Connetti il database</h3><p>Colleghi PostgreSQL, MySQL, MongoDB o qualsiasi sorgente dati. Shark Byte analizza lo schema e ne comprende la struttura.</p></div></div>
+        <div class="step reveal d2"><div class="step-n">02</div><div><h3>Il backend si genera</h3><p>API REST o GraphQL generate automaticamente. Autenticazione, permessi e logica di business — tutto pronto in minuti.</p></div></div>
+        <div class="step reveal d3"><div class="step-n">03</div><div><h3>Il frontend si costruisce</h3><p>Componenti UI, pagine e layout connessi al backend. Il design segue il tuo brand, non un template generico.</p></div></div>
+        <div class="step reveal d4"><div class="step-n">04</div><div><h3>Deploy e aggiornamento live</h3><p>Ogni modifica al database si riflette automaticamente sul sito. Zero ridistribuzioni manuali, zero downtime.</p></div></div>
+      </div>
+      <div class="reveal d2" style="display:flex;justify-content:center">
+        <div class="flow">
+          <div class="flow-node"><div class="flow-ico ico-db">🗄️</div><div><div class="flow-lbl">Database</div><div class="flow-meta">PostgreSQL · MySQL · MongoDB</div></div></div>
+          <div class="flow-arr"></div>
+          <div class="flow-node"><div class="flow-ico ico-be">⚙️</div><div><div class="flow-lbl">Backend Engine</div><div class="flow-meta">API REST · GraphQL · Auth</div></div></div>
+          <div class="flow-arr"></div>
+          <div class="flow-node"><div class="flow-ico ico-fe">🎨</div><div><div class="flow-lbl">Frontend Builder</div><div class="flow-meta">React · Next.js · Custom UI</div></div></div>
+          <div class="flow-arr"></div>
+          <div class="flow-node"><div class="flow-ico ico-live">🚀</div><div><div class="flow-lbl">Sito Live</div><div class="flow-meta">CDN · SSL · Performance 100</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec" id="feat" style="background:var(--black)">
+  <div class="container">
+    <div class="tag reveal">Funzionalità</div>
+    <h2 class="h2 reveal d1">Tutto ciò che serve.<br>Niente di superfluo.</h2>
+    <div class="feat-grid">
+      <div class="feat reveal d1"><span class="feat-ico">⚡</span><h3>Generazione API automatica</h3><p>Dallo schema del database, endpoint REST e GraphQL perfettamente documentati e ottimizzati.</p><span class="feat-tag">Auto-generate</span></div>
+      <div class="feat reveal d2"><span class="feat-ico">🔄</span><h3>Sync in tempo reale</h3><p>Le modifiche al database si propagano istantaneamente sul frontend. Nessun deploy manuale.</p><span class="feat-tag">Real-time</span></div>
+      <div class="feat reveal d3"><span class="feat-ico">🎨</span><h3>Design system personalizzato</h3><p>Componenti UI costruiti sul tuo brand. Palette, tipografia, spacing — tutto coerente.</p><span class="feat-tag">Custom design</span></div>
+      <div class="feat reveal d1"><span class="feat-ico">🔐</span><h3>Autenticazione integrata</h3><p>JWT, OAuth, RBAC — gestione degli accessi robusta e configurabile senza boilerplate.</p><span class="feat-tag">Sicurezza</span></div>
+      <div class="feat reveal d2"><span class="feat-ico">📊</span><h3>Dashboard analytics</h3><p>Visualizzazione dati in tempo reale dal tuo database. KPI e grafici aggiornati all'istante.</p><span class="feat-tag">Analytics</span></div>
+      <div class="feat reveal d3"><span class="feat-ico">🌍</span><h3>Deploy globale</h3><p>Distribuzione su CDN edge mondiale. Performance ottimali ovunque, uptime 99.9% garantito.</p><span class="feat-tag">Cloud-native</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT: BACKEND -->
+<section class="sec" style="background:var(--mid)">
+  <div class="container">
+    <div class="split">
+      <div class="split-t">
+        <div class="tag reveal">Backend intelligente</div>
+        <h2 class="h2 reveal d1">Codice generato.<br>Mai scritto a mano.</h2>
+        <p class="sub reveal d2">Il nostro engine analizza il tuo schema e genera backend completo: validazione, relazioni, paginazione, filtri avanzati — tutto ottimizzato per produzione.</p>
+        <a href="#contact" class="btn btn-p reveal d3">Vedi un esempio live</a>
+      </div>
+      <div class="split-v reveal d2">
+        <div class="code-win">
+          <div><span class="cm">// 🦈 Auto-generated API</span></div>
+          <div><span class="kw">const</span> <span class="fn">getProducts</span> = <span class="kw">async</span>(req, res) => {</div>
+          <div>&nbsp;&nbsp;<span class="kw">const</span> { page } = req.query;</div>
+          <div>&nbsp;&nbsp;<span class="kw">const</span> data = <span class="kw">await</span> db</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;.from(<span class="str">'products'</span>)</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;.select(<span class="str">'*'</span>)</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;.where({ active: <span class="ac">true</span> })</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;.paginate(page);</div>
+          <div>&nbsp;&nbsp;res.json({ data });</div>
+          <div>};</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT: FRONTEND -->
+<section class="sec" style="background:var(--shark)">
+  <div class="container">
+    <div class="split flip">
+      <div class="split-t">
+        <div class="tag reveal">Frontend su misura</div>
+        <h2 class="h2 reveal d1">Il tuo brand.<br>Non un template.</h2>
+        <p class="sub reveal d2">Ogni componente costruito attorno alla tua identità visiva. Niente temi precostituiti: design system originale, animazioni fluide, UX pensata per convertire.</p>
+        <a href="#contact" class="btn btn-g reveal d3">Guarda il portfolio</a>
+      </div>
+      <div class="split-v reveal d2" style="background:var(--card)">
+        <div class="ui-mock">
+          <div class="ui-hd"><div class="ui-sq"></div><div><div class="ui-ln" style="width:68px"></div><div class="ui-ln2"></div></div></div>
+          <div class="ui-ph"></div>
+          <div class="ui-row"><div class="ui-bg"></div><div class="ui-bp"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="sec" style="background:var(--black);text-align:center">
+  <div class="container">
+    <div class="tag reveal">I numeri</div>
+    <h2 class="h2 reveal d1">Risultati che parlano.</h2>
+    <div class="stats-grid">
+      <div class="stat reveal d1"><div class="stat-n"><span class="stat-acc" data-target="10">0</span>×</div><div class="stat-l">Più veloce dello sviluppo tradizionale</div></div>
+      <div class="stat reveal d2"><div class="stat-n"><span data-target="99">0</span>%</div><div class="stat-l">Uptime garantito su tutti i deployment</div></div>
+      <div class="stat reveal d3"><div class="stat-n"><span class="stat-acc" data-target="50">0</span>+</div><div class="stat-l">Progetti lanciati con successo</div></div>
+      <div class="stat reveal d4"><div class="stat-n"><span data-target="100">0</span></div><div class="stat-l">Performance Lighthouse score</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="sec" id="team" style="background:var(--shark)">
+  <div class="container">
+    <div class="team-hdr">
+      <div class="tag reveal">Chi siamo</div>
+      <h2 class="h2 reveal d1">I nostri professionisti<br>del settore.</h2>
+      <p class="sub reveal d2">Quattro specialisti, un'unica missione: trasformare i tuoi dati in esperienze digitali che fanno la differenza.</p>
+    </div>
+    <div class="team-grid">
+      <div class="card-profess reveal d1">
+        <img src="img/fotoBottanF.png" alt="Francesco Bottan">
+        <div class="info-overlay"><div class="overlay-content">
+          <h5>Francesco Bottan</h5>
+          <span class="ruolo">Frontend Architecture &amp; UX</span>
+          <div class="linea-decorativa"></div>
+          <p class="descrizione">Trasforma il codice in esperienze visive coinvolgenti, assicurando che ogni sito non sia solo bello da vedere, ma estremamente fluido da navigare.</p>
+        </div></div>
+      </div>
+      <div class="card-profess reveal d2">
+        <img src="img/LUDOVICOGARDENALIMJ.png" alt="Ludovico Gardenal">
+        <div class="info-overlay"><div class="overlay-content">
+          <h5>Ludovico Gardenal</h5>
+          <span class="ruolo">Database Design &amp; Security</span>
+          <div class="linea-decorativa"></div>
+          <p class="descrizione">Il custode dei dati aziendali. Progetta architetture robuste e sicure, mettendo la protezione delle informazioni al centro di ogni progetto.</p>
+        </div></div>
+      </div>
+      <div class="card-profess reveal d3">
+        <img src="img/DANIELEIMJ.png" alt="Daniele Sandre">
+        <div class="info-overlay"><div class="overlay-content">
+          <h5>Daniele Sandre</h5>
+          <span class="ruolo">Specialista Backend &amp; Cloud</span>
+          <div class="linea-decorativa"></div>
+          <p class="descrizione">Architetto delle fondamenta logiche, garantisce che ogni applicativo sia una macchina perfetta, capace di gestire carichi elevati.</p>
+        </div></div>
+      </div>
+      <div class="card-profess reveal d4">
+        <img src="img/imgalessiomondini.png" alt="Alessio Mondini">
+        <div class="info-overlay"><div class="overlay-content">
+          <h5>Alessio Mondini</h5>
+          <span class="ruolo">Full-stack &amp; API Integration</span>
+          <div class="linea-decorativa"></div>
+          <p class="descrizione">Coordina l'integrazione tra front-end e back-end attraverso API ottimizzate, garantendo una comunicazione fluida tra tutti i componenti.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="sec" id="tech" style="background:var(--mid)">
+  <div class="container">
+    <div class="tag reveal">Stack tecnologico</div>
+    <h2 class="h2 reveal d1">Costruito con le<br>migliori tecnologie.</h2>
+    <p class="sub reveal d2" style="margin-top:12px">Nessun lock-in. Usiamo strumenti open source, battle-tested e scalabili — così il tuo progetto cresce con te.</p>
+    <div class="pills">
+      <div class="pill reveal d1"><span>🐘</span> PostgreSQL</div>
+      <div class="pill reveal d1"><span>🍃</span> MongoDB</div>
+      <div class="pill reveal d2"><span>🟢</span> Node.js</div>
+      <div class="pill reveal d2"><span>⚡</span> Next.js</div>
+      <div class="pill reveal d3"><span>⚛️</span> React</div>
+      <div class="pill reveal d3"><span>🔷</span> TypeScript</div>
+      <div class="pill reveal d4"><span>🐳</span> Docker</div>
+      <div class="pill reveal d4"><span>☁️</span> AWS / Vercel</div>
+      <div class="pill reveal d1"><span>🔺</span> GraphQL</div>
+      <div class="pill reveal d2"><span>🎯</span> Strapi CMS</div>
+      <div class="pill reveal d3"><span>🔒</span> JWT / OAuth</div>
+      <div class="pill reveal d4"><span>📡</span> REST APIs</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec" id="contact">
+  <div class="container">
+    <div class="cta-box reveal">
+      <div class="tag">Inizia oggi</div>
+      <h2 class="h2">Pronto a trasformare<br>i tuoi dati?</h2>
+      <p class="sub" style="margin:12px auto 0">Raccontaci il tuo progetto. In 48 ore ti mostriamo come Shark Byte può automatizzare il tuo sito web.</p>
+      <div class="cta-acts">
+        <a href="mailto:hello@sharkbyte.it" class="btn btn-p">Richiedi una demo gratuita</a>
+        <a href="mailto:hello@sharkbyte.it" class="btn btn-g">hello@sharkbyte.it</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo"><div class="logo-sq">🦈</div>Shark Byte</a>
+      <p>Trasformiamo database in esperienze digitali straordinarie. Automazione, velocità, design senza compromessi.</p>
+    </div>
+    <div class="footer-col"><h4>Servizi</h4><ul><li><a href="#">Web Automation</a></li><li><a href="#">API Generation</a></li><li><a href="#">Frontend Design</a></li><li><a href="#">Cloud Deploy</a></li></ul></div>
+    <div class="footer-col"><h4>Azienda</h4><ul><li><a href="#team">Chi siamo</a></li><li><a href="#">Portfolio</a></li><li><a href="#">Blog</a></li><li><a href="#">Carriere</a></li></ul></div>
+    <div class="footer-col"><h4>Contatti</h4><ul><li><a href="mailto:hello@sharkbyte.it">hello@sharkbyte.it</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">GitHub</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <p>© 2025 Shark Byte. Tutti i diritti riservati.</p>
+    <p>Fatto con 🦈 in Italia</p>
+  </div>
+</footer>
+
+<script>
+// Navbar scroll
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => navEl.classList.toggle('scrolled', scrollY > 36), {passive:true});
+
+// Mobile menu
+const burger = document.getElementById('burger');
+const mmenu  = document.getElementById('mmenu');
+burger.addEventListener('click', () => mmenu.classList.toggle('open'));
+function cm(){ mmenu.classList.remove('open'); }
+
+// Reveal
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }});
+}, {threshold:.1, rootMargin:'0px 0px -44px 0px'});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Counters
+const cio = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if(!e.isIntersecting) return;
+    const el = e.target, t = +el.dataset.target; let c = 0;
+    const iv = setInterval(() => { c = Math.min(c + t/55, t); el.textContent = Math.round(c); if(c>=t) clearInterval(iv); }, 28);
+    cio.unobserve(el);
+  });
+}, {threshold:.5});
+document.querySelectorAll('[data-target]').forEach(el => cio.observe(el));
+</script>
+</body>
+</html>
