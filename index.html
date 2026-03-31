@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,56 +8,93 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         .glass-card {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(34, 211, 238, 0.1);
         }
+
         .text-glow {
             text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
         }
     </style>
 </head>
+
 <body class="bg-slate-950 text-slate-200">
 
-    <nav class="fixed w-full z-50 glass-card border-b border-slate-800">
+    <nav class="fixed w-full z-50 glass-card border-b border-slate-800 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-2">
                     <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 80C20 80 35 70 45 40C55 10 80 10 80 10C80 10 70 45 45 65C30 75 20 80 20 80Z" fill="#22d3ee"/>
-                        <rect x="50" y="70" width="10" height="10" fill="#22d3ee" opacity="0.6"/>
-                        <rect x="65" y="70" width="10" height="10" fill="#22d3ee" opacity="0.3"/>
+                        <path d="M20 80C20 80 35 70 45 40C55 10 80 10 80 10C80 10 70 45 45 65C30 75 20 80 20 80Z"
+                            fill="#22d3ee" />
+                        <rect x="50" y="70" width="10" height="10" fill="#22d3ee" opacity="0.6" />
+                        <rect x="65" y="70" width="10" height="10" fill="#22d3ee" opacity="0.3" />
                     </svg>
-                    <span class="text-xl font-extrabold tracking-tighter text-white">SHARK<span class="text-cyan-400">BYTE</span></span>
+                    <span class="text-xl font-extrabold tracking-tighter text-white">SHARK<span
+                            class="text-cyan-400">BYTE</span></span>
                 </div>
+
                 <div class="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest">
                     <a href="#home" class="hover:text-cyan-400 transition">Home</a>
                     <a href="#about" class="hover:text-cyan-400 transition">Chi Siamo</a>
                     <a href="#team" class="hover:text-cyan-400 transition">Team</a>
                     <a href="#portfolio" class="hover:text-cyan-400 transition">Portfolio</a>
                 </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="menu-btn" class="text-slate-200 hover:text-cyan-400 focus:outline-none">
+                        <svg id="menu-icon" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
             </div>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-slate-950/95 border-b border-slate-800 px-4 pt-2 pb-6 space-y-4">
+            <a href="#home"
+                class="block text-base font-medium text-slate-200 hover:text-cyan-400 transition mobile-link">Home</a>
+            <a href="#about"
+                class="block text-base font-medium text-slate-200 hover:text-cyan-400 transition mobile-link">Chi
+                Siamo</a>
+            <a href="#team"
+                class="block text-base font-medium text-slate-200 hover:text-cyan-400 transition mobile-link">Team</a>
+            <a href="#portfolio"
+                class="block text-base font-medium text-slate-200 hover:text-cyan-400 transition mobile-link">Portfolio</a>
+            <a href="#contatti"
+                class="block bg-cyan-500 text-slate-950 font-bold py-2 px-4 rounded-lg text-center">Contattaci</a>
         </div>
     </nav>
 
     <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950 to-slate-950"></div>
+        <div
+            class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950 to-slate-950">
+        </div>
         <div class="relative z-10 text-center px-4">
             <div class="mb-6 flex justify-center">
                 <svg width="120" height="120" viewBox="0 0 100 100" class="drop-shadow-[0_0_15px_rgba(34,211,238,0.4)]">
-                    <path d="M20 80C20 80 35 70 45 40C55 10 80 10 80 10C80 10 70 45 45 65C30 75 20 80 20 80Z" fill="#22d3ee"/>
+                    <path d="M20 80C20 80 35 70 45 40C55 10 80 10 80 10C80 10 70 45 45 65C30 75 20 80 20 80Z"
+                        fill="#22d3ee" />
                 </svg>
             </div>
             <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight">
                 Mordiamo il <span class="text-cyan-400 text-glow">Futuro</span>.
             </h1>
             <p class="text-slate-400 max-w-2xl mx-auto text-lg mb-8">
-                Soluzioni software high-performance, architetture scalabili e design futuristico. Trasformiamo byte in valore di business.
+                Soluzioni software high-performance, architetture scalabili e design futuristico. Trasformiamo byte in
+                valore di business.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#portfolio" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105">
+                <a href="#portfolio"
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105">
                     Esplora Progetti
                 </a>
                 <a href="#" class="border border-slate-700 hover:border-cyan-400 py-3 px-8 rounded-full transition-all">
@@ -72,7 +110,9 @@
                 <div>
                     <h2 class="text-3xl font-bold text-white mb-6">Expertise Full-Stack</h2>
                     <p class="text-slate-400 leading-relaxed mb-6">
-                        In Shark Byte non scriviamo solo codice; progettiamo ecosistemi. Dalla reattività del **Frontend** alla robustezza del **Backend**, fino all'ottimizzazione chirurgica dei **Database**. 
+                        In Shark Byte non scriviamo solo codice; progettiamo ecosistemi. Dalla reattività del
+                        **Frontend** alla robustezza del **Backend**, fino all'ottimizzazione chirurgica dei
+                        **Database**.
                     </p>
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
@@ -110,28 +150,34 @@
         </div>
         <div class="max-w-7xl mx-auto px-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="group relative p-8 glass-card rounded-3xl transition-all hover:-translate-y-2">
-                <div class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
+                <div
+                    class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="CEO">
                 </div>
                 <h3 class="text-xl font-bold text-white mb-1">Alex Rivolta</h3>
                 <p class="text-cyan-400 text-sm mb-4">CEO & Founder</p>
                 <p class="text-slate-400 text-sm">Visionario tech con 15 anni di esperienza nel settore enterprise.</p>
             </div>
-            <div class="group relative p-8 glass-card rounded-3xl transition-all hover:-translate-y-2 border-cyan-500/30 border">
-                <div class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
+            <div
+                class="group relative p-8 glass-card rounded-3xl transition-all hover:-translate-y-2 border-cyan-500/30 border">
+                <div
+                    class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" alt="Lead Dev">
                 </div>
                 <h3 class="text-xl font-bold text-white mb-1">Elena Byte</h3>
                 <p class="text-cyan-400 text-sm mb-4">Lead Developer</p>
-                <p class="text-slate-400 text-sm">Architetto del codice, specializzata in sistemi distribuiti e React.</p>
+                <p class="text-slate-400 text-sm">Architetto del codice, specializzata in sistemi distribuiti e React.
+                </p>
             </div>
             <div class="group relative p-8 glass-card rounded-3xl transition-all hover:-translate-y-2">
-                <div class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
+                <div
+                    class="w-24 h-24 bg-slate-800 rounded-2xl mb-6 mx-auto overflow-hidden border border-slate-700 group-hover:border-cyan-400 transition">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marco" alt="DBA">
                 </div>
                 <h3 class="text-xl font-bold text-white mb-1">Marco Query</h3>
                 <p class="text-cyan-400 text-sm mb-4">Database Administrator</p>
-                <p class="text-slate-400 text-sm">Custode dell'integrità dei dati e mago dell'ottimizzazione SQL/NoSQL.</p>
+                <p class="text-slate-400 text-sm">Custode dell'integrità dei dati e mago dell'ottimizzazione SQL/NoSQL.
+                </p>
             </div>
         </div>
     </section>
@@ -143,29 +189,147 @@
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="group relative overflow-hidden rounded-xl aspect-video bg-slate-800">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10">
+                    </div>
                     <div class="absolute bottom-4 left-4 z-20">
                         <h4 class="text-white font-bold">CyberBank App</h4>
                         <p class="text-cyan-400 text-sm">Fintech Solution</p>
                     </div>
-                    <div class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50"></div>
+                    <div
+                        class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50">
+                    </div>
                 </div>
                 <div class="group relative overflow-hidden rounded-xl aspect-video bg-slate-800">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10">
+                    </div>
                     <div class="absolute bottom-4 left-4 z-20">
                         <h4 class="text-white font-bold">Deep Sea Data</h4>
                         <p class="text-cyan-400 text-sm">AI Analysis Tool</p>
                     </div>
-                    <div class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50"></div>
+                    <div
+                        class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50">
+                    </div>
                 </div>
                 <div class="group relative overflow-hidden rounded-xl aspect-video bg-slate-800">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10">
+                    </div>
                     <div class="absolute bottom-4 left-4 z-20">
                         <h4 class="text-white font-bold">Neon Logistics</h4>
                         <p class="text-cyan-400 text-sm">E-commerce Engine</p>
                     </div>
-                    <div class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50"></div>
+                    <div
+                        class="absolute inset-0 group-hover:scale-110 transition-transform duration-500 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800')] bg-cover opacity-50">
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contatti" class="py-24 bg-slate-950 relative overflow-hidden">
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <div>
+                    <h2 class="text-cyan-400 font-bold tracking-[0.2em] uppercase mb-4 text-sm">Contatti</h2>
+                    <h3 class="text-5xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
+                        Pronto a fare il <span class="text-cyan-400 text-glow">grande salto?</span>
+                    </h3>
+                    <p class="text-slate-400 text-lg mb-10 leading-relaxed">
+                        Siamo pronti ad ascoltare la tua idea e trasformarla in un prodotto digitale d'eccellenza.
+                        Il nostro team tecnico risponde solitamente entro <span class="text-white font-semibold">24
+                            ore</span>.
+                    </p>
+
+                    <div class="space-y-8">
+                        <div class="flex items-center space-x-6 group">
+                            <div
+                                class="w-14 h-14 glass-card rounded-2xl flex items-center justify-center text-cyan-400 border border-slate-800 group-hover:border-cyan-400/50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Email Us</p>
+                                <span class="text-slate-200 font-medium text-lg">hello@sharkbyte.tech</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-6 group">
+                            <div
+                                class="w-14 h-14 glass-card rounded-2xl flex items-center justify-center text-cyan-400 border border-slate-800 group-hover:border-cyan-400/50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-widest text-slate-500 mb-1">Headquarters</p>
+                                <span class="text-slate-200 font-medium text-lg">Milano, Italia (HQ)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 md:p-12 rounded-[2rem] border border-slate-800/50 shadow-2xl">
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 ml-1">Nome</label>
+                                <input type="text"
+                                    class="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-white transition-all placeholder:text-slate-600"
+                                    placeholder="Mario Rossi">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 ml-1">Email</label>
+                                <input type="email"
+                                    class="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-white transition-all placeholder:text-slate-600"
+                                    placeholder="mario@esempio.it">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 ml-1">Tipo
+                                di Progetto</label>
+                            <select
+                                class="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-white transition-all appearance-none cursor-pointer">
+                                <option class="bg-slate-950">Sviluppo Web Full-Stack</option>
+                                <option class="bg-slate-950">Mobile App Development</option>
+                                <option class="bg-slate-950">Integrazione AI / LLM</option>
+                                <option class="bg-slate-950">Cloud Architecture</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2 ml-1">Il
+                                tuo Messaggio</label>
+                            <textarea rows="4"
+                                class="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-white transition-all placeholder:text-slate-600"
+                                placeholder="Descrivici la tua visione tecnologica..."></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-5 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(34,211,238,0.3)] flex items-center justify-center space-x-3 uppercase tracking-widest text-sm">
+                            <span>Invia Messaggio</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path
+                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </section>
@@ -187,6 +351,41 @@
                 nav.classList.remove('shadow-2xl', 'bg-slate-950/95');
             }
         });
+
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        // Toggle Menu
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+
+            // Cambia l'icona da Hamburger a "X" (opzionale ma consigliato)
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            menuIcon.innerHTML = isOpen
+                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />'
+                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+        });
+
+        // Chiudi il menu quando si clicca su un link
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />';
+            });
+        });
+
+        // Gestione scroll della navbar (già presente nel tuo codice, pulita)
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-slate-950/95', 'shadow-2xl');
+            } else {
+                nav.classList.remove('bg-slate-950/95', 'shadow-2xl');
+            }
+        });
     </script>
 </body>
+
 </html>
