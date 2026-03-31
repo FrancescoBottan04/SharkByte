@@ -1,0 +1,135 @@
+/* Container Principale */
+.container-proffessionisti {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+/* Titolo Sezione */
+.titolo-proff {
+    grid-column: 1 / -1; 
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.titolo-proff h4 {
+    font-size: 1.1rem;
+    color: #00d4ff; /* Azzurro Shark Byte */
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.titolo-proff h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 2px;
+    background-color: #00d4ff;
+}
+
+/* Card Professionisti */
+.card-profess {
+    position: relative;
+    height: 450px; /* Aumentato leggermente per ospitare i testi */
+    background: #1a1a1a;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-profess:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,212,255,0.2); /* Glow azzurro al passaggio */
+}
+
+/* Gestione Immagini */
+.card-profess img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: grayscale(100%);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card-profess:hover img {
+    filter: grayscale(0%);
+    transform: scale(1.1); 
+}
+
+/* Overlay Info */
+.info-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.4) 60%, transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 30px;
+    box-sizing: border-box;
+    transform: translateY(70%); /* Mostra solo il nome inizialmente */
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 2;
+}
+
+.card-profess:hover .info-overlay {
+    transform: translateY(0);
+}
+
+.overlay-content {
+    color: white;
+    text-align: left;
+}
+
+.overlay-content h5 {
+    font-size: 1.4rem;
+    margin: 0;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.ruolo {
+    color: #00d4ff; /* Azzurro Shark Byte */
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.linea-decorativa {
+    width: 40px;
+    height: 2px;
+    background: #00d4ff;
+    margin-bottom: 15px;
+    transition: width 0.4s ease;
+}
+
+.card-profess:hover .linea-decorativa {
+    width: 100%;
+}
+
+.descrizione {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0;
+    color: #ddd;
+    transition: opacity 0.5s ease 0.2s;
+}
+
+.card-profess:hover .descrizione {
+    opacity: 1;
+}
